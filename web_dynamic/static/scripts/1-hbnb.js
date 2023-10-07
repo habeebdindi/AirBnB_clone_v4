@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $("amenities").css();
+    $("amenities").css("margin-right", "5px");
     $('input[type="checkbox"]').css("margin-right", "5px");
     $(".filters h4").css({
 	"margin-left": "15%",
