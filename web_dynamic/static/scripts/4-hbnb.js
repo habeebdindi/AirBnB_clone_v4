@@ -1,5 +1,3 @@
-/* Script that listens for changes on each INPUT checkbox tag */
-/* Dynamic Functionality */
 $('document').ready(function () {
     $("amenities").css("margin-right", "5px");
     $('input[type="checkbox"]').css("margin-right", "5px");
@@ -65,7 +63,7 @@ $('document').ready(function () {
                         '<br />' + place.number_bathrooms + ' Bathroom' +
                         '</div>' +
                         '</div>' +
-			'<div class="description">' + place.description +
+                        '<div class="description">' + place.description +
                         '</div>' +
                         '</article>'
                     );
@@ -74,4 +72,47 @@ $('document').ready(function () {
         });
     };
     getPlaces();
+
+    /*new POST request to places_search is made with the list of Amenities
+      checked when button is clicked
+    */
+    $('button[type="button"]').on("click", function() {
+	$.ajax({
+	    url: "http://localhost:5001/api/v1/places_search/",
+	    method: "POST",
+	    contentType: "application/json",
+	    dataType: "json",
+	    data: JSON.stringify(Object.values(amenityDict)),
+            success: function (places) {
+                $.each(places, function (index, place) {
+                    $('.places').append(
+                        '<article>' +
+                        '<div class="title_box">' +
+                        '<h2>' + place.name + '</h2>' +
+                        '<div class="price_by_night">' + place.price_by_night +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="information">' +
+                        '<div class="max_guest">' +
+                        '<br />' + place.max_guest + ' Guests' +
+                        '</div>' +
+                        '<div class="number_rooms">' +
+                        '<br />' + place.number_rooms + ' Bedrooms' +
+                        '</div>' +
+                        '<div class="number_bathrooms">' +
+                        '<br />' + place.number_bathrooms + ' Bathroom' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="description">' + place.description +
+                        '</div>' +
+                        '</article>'
+                    );
+                });
+		console.log(places);
+	    },
+	    error: function(xhr, status, error) {
+		console.log(xhr.statusText);
+	    }
+	});
+    });
 });
