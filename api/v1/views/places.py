@@ -131,6 +131,7 @@ def places_search():
     data = request.get_json()
 
     if data and len(data):
+        print(data)
         states = data.get('states', None)
         cities = data.get('cities', None)
         amenities = data.get('amenities', None)
