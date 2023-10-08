@@ -11,8 +11,8 @@ $('document').ready(function () {
 	"overflow": "hidden",
 	"text-overflow": "ellipsis"
     });
-    let amenityDict = {}
-    $('input[type="checkbox"]').on("change", function() {
+    let amenityDict = {}, stateDict = {}, cityDict = {};
+    $('.amenities input[type="checkbox"]').on("change", function() {
 	let amenityId = $(this).data("id");
 	let amenityName = $(this).data("name");
 	if ($(this).is(":checked")) {
@@ -24,6 +24,30 @@ $('document').ready(function () {
 	$("div.amenities h4").text(amenitiesText);
     });
 
+    $('.locations input[type="checkbox"]').on("change", function() {
+	let stateId = $(this).data("id");
+	let stateName = $(this).data("name");
+	if ($(this).is(":checked")) {
+	    stateDict[stateName] = stateId;
+	} else {
+	    delete stateDict[stateName];
+	}
+	let statesText = Object.keys(stateDict).join(", ");
+	$("div.locations h4").text(statesText);
+    });
+
+    $('.city_check').on("change", function() {
+	let cityId = $(this).data("id");
+	let cityName = $(this).data("name");
+	if ($(this).is(":checked")) {
+	    cityDict[cityName] = cityId;
+	} else {
+	    delete cityDict[cityName];
+	}
+	let citiesText = Object.keys(citiesDict).join(", ");
+	$("div.locations h4").text(citiesText);
+    });
+
     const url = 'http://' + window.location.hostname + ':5001/api/v1/status/';
     $.get(url, function (res) {
         if (res.status === 'OK') {
@@ -33,9 +57,7 @@ $('document').ready(function () {
         }
     });
 
-    /*
-      Retrieve all places and create an article tag with them
-    */
+    /* Retrieve all places and create an article tag with them */
     const getPlaces = function () {
         $.ajax({
             type: 'POST',
@@ -74,7 +96,7 @@ $('document').ready(function () {
     getPlaces();
 
     /*new POST request to places_search is made with the list of Amenities
-      checked when button is clicked
+      , States and Cities checked when button is clicked
     */
     $('button[type="button"]').on("click", function() {
 	$(".places").empty();
@@ -83,7 +105,10 @@ $('document').ready(function () {
 	    method: "POST",
 	    contentType: "application/json",
 	    dataType: "json",
-	    data: JSON.stringify({ "amenities": Object.values(amenityDict) }),
+	    data: JSON.stringify({ "amenities": Object.values(amenityDict),
+				   "states": Object.values(stateDict),
+				   "cities": Object.values(cityDict)
+				 }),
             success: function (places) {
                 $.each(places, function (index, place) {
                     $('.places').append(

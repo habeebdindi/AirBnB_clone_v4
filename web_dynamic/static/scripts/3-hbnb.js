@@ -70,6 +70,7 @@ $('document').ready(function () {
                         '</article>'
                     );
                 });
+		console.log(places);
             }
         });
     };
